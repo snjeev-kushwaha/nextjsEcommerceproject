@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { AiFillLock } from 'react-icons/ai'
 
 const Forgot = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      router.push('/')
+    }
+  }, []);
+
   return (
     <>
       <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">

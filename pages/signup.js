@@ -1,11 +1,63 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { AiFillLock } from 'react-icons/ai'
+import { useRouter } from 'next/router';
+import { AiFillLock } from 'react-icons/ai';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Signup = () => {
+  const router = useRouter()
+  const [userinfo, setUserinfo] = useState({
+    name: '',
+    email: '',
+    password: '',
+  })
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      router.push('/')
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserinfo({ ...userinfo, [name]: value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const configs = {
+      "Content-Type": "application/json"
+    }
+    let api = await axios.post('http://localhost:3000/api/signup', userinfo, configs)
+    if (api.data.success === "success") {
+      toast.success("Your account has been created")
+    } else {
+      toast.error("Please fill valid data")
+    }
+    setUserinfo({
+      name: '',
+      email: '',
+      password: ''
+    })
+  }
+
+
   return (
     <>
       <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <ToastContainer
+          position="top-left"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="w-full max-w-md space-y-8">
           <div>
             <img
@@ -23,7 +75,7 @@ const Signup = () => {
               </Link>
             </p>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6" method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
@@ -33,6 +85,8 @@ const Signup = () => {
                 <input
                   id="name"
                   name="name"
+                  onChange={handleChange}
+                  value={userinfo.name}
                   type="text"
                   autoComplete="name"
                   required
@@ -45,8 +99,10 @@ const Signup = () => {
                   Email address
                 </label>
                 <input
-                  id="email-address"
+                  id="email"
                   name="email"
+                  onChange={handleChange}
+                  value={userinfo.email}
                   type="email"
                   autoComplete="email"
                   required
@@ -61,6 +117,8 @@ const Signup = () => {
                 <input
                   id="password"
                   name="password"
+                  onChange={handleChange}
+                  value={userinfo.password}
                   type="password"
                   autoComplete="current-password"
                   required
