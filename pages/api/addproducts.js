@@ -2,7 +2,6 @@ import Product from "../../models/Product"
 import connectDb from "../../middleware/mongoose"
 
 const handler = async (req, res) => {
-    console.log(req.body, 'req.bodys')
     if (req.method == 'POST') {
         for (let i = 0; i < req.body.length; i++) {
             let p = new Product({
@@ -16,7 +15,6 @@ const handler = async (req, res) => {
                 price: req.body[i].price,
                 availableQty: req.body[i].availableQty
             })
-            console.log(p, 'sfjskfjsldf')
             await p.save();
         }
         res.status(200).json({ success: "success" })

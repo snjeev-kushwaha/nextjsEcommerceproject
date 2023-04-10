@@ -3,10 +3,8 @@ import { useRouter } from 'next/router';
 import Product from '../../models/Product';
 import mongoose from 'mongoose';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Slug = ({ addToCart, product, variants, buyNow }) => {
-    console.log(product, variants)
     const router = useRouter()
     const { slug } = router.query
     const [pin, setPin] = useState();
@@ -16,28 +14,10 @@ const Slug = ({ addToCart, product, variants, buyNow }) => {
         let pinJson = await pins.json();
         if (pinJson.includes(parseInt(pin))) {
             setService(true)
-            toast.success('Your Pincode is serviceable!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.success('Your Pincode is serviceable!');
         } else {
             setService(false)
-            toast.error('Sorry Your Pincode not serviceable', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                });
+            toast.error('Sorry Your Pincode not serviceable');
         }
     }
 
@@ -58,8 +38,8 @@ const Slug = ({ addToCart, product, variants, buyNow }) => {
         <div>
             <section className="text-gray-600 body-font overflow-hidden">
                 <ToastContainer
-                    position="top-right"
-                    autoClose={3000}
+                    position="top-left"
+                    autoClose={2000}
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick

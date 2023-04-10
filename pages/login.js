@@ -1,11 +1,66 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
+import { useRouter } from 'next/router'
 import Link from 'next/link';
 import { AiFillLock } from 'react-icons/ai'
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Login = () => {
+  const router = useRouter();
+  const [logininfo, setLogininfo] = useState({
+    email: '',
+    password: '',
+  })
+
+  useEffect(() => {
+    if(localStorage.getItem('token')){
+      router.push('/')
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLogininfo({ ...logininfo, [name]: value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const configs = {
+      "Content-Type": "application/json"
+    }
+    const api = await axios.post('http://localhost:3000/api/login', logininfo, configs)
+    console.log(api)
+    if (api.data.success === "true") {
+      localStorage.setItem('token', api.data.token)
+      toast.success("You are successfully logged in!")
+      setTimeout(() => {
+        router.push('/')
+      }, 3000)
+    }
+    else {
+      toast.error("Invalid credentials")
+    }
+    setLogininfo({
+      email: '',
+      password: ''
+    })
+  }
+
   return (
     <>
       <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <ToastContainer
+          position="top-left"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="w-full max-w-md space-y-8">
           <div>
             <img
@@ -23,7 +78,7 @@ const Login = () => {
               </Link>
             </p>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6" method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
@@ -33,6 +88,8 @@ const Login = () => {
                 <input
                   id="email-address"
                   name="email"
+                  onChange={handleChange}
+                  value={logininfo.email}
                   type="email"
                   autoComplete="email"
                   required
@@ -47,6 +104,8 @@ const Login = () => {
                 <input
                   id="password"
                   name="password"
+                  onChange={handleChange}
+                  value={logininfo.password}
                   type="password"
                   autoComplete="current-password"
                   required
@@ -57,18 +116,6 @@ const Login = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-600"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-
               <div className="text-sm">
                 <Link href={'/forgot'} className="font-medium text-pink-600 hover:text-pink-500">
                   Forgot your password?

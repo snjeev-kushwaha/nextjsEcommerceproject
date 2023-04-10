@@ -3,7 +3,6 @@ import Product from '../models/Product';
 import mongoose from 'mongoose';
 
 const Stickers = ({ products }) => {
-  console.log(products)
   return (
     <div>
       <section className="text-gray-600 body-font">
