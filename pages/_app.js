@@ -2,16 +2,18 @@ import '../styles/globals.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter()
   const [cart, setCart] = useState({})
   const [subTotal, setSubTotal] = useState(0)
 
   useEffect(() => {
-    console.log('Hey i am a useEffect from _app.js')
     try {
       if (localStorage.getItem("cart")) {
         setCart(JSON.parse(localStorage.getItem("cart")))
+        saveCart(JSON.parse(localStorage.getItem("cart")))
       }
     } catch (error) {
       console.error(error)
@@ -20,10 +22,11 @@ function MyApp({ Component, pageProps }) {
   }, [])
 
   const saveCart = (myCart) => {
-    localStorage.setItem('cart', myCart)
+    localStorage.setItem('cart', JSON.stringify(myCart))
     let subt = 0;
-    for(let i=0; Object.keys(cart).length; i++){
-      subt += myCart[keys[i]].price * myCart[keys[i]].qty;
+    let keys = Object.keys(myCart)
+    for (let i = 0; i < keys.length; i++) {
+      subt += myCart[keys[i]]["price"] * myCart[keys[i]].qty;
     }
     setSubTotal(subt)
   }
@@ -40,17 +43,25 @@ function MyApp({ Component, pageProps }) {
     saveCart(newCart)
   }
 
+  const buyNow = (itemCode, qty, price, name, size, variant) => {
+    let newCart = { itemCode: { qty: 1, price, name, size, variant } }
+    setCart(newCart)
+    saveCart(newCart)
+
+    router.push('/checkout')
+  }
+
   const clearCart = () => {
     setCart({})
     saveCart({})
   }
 
   const removeFromCart = (itemCode, qty, price, name, size, variant) => {
-    let newCart = cart;
+    let newCart = JSON.parse(JSON.stringify(cart));
     if (itemCode in cart) {
       newCart[itemCode].qty = cart[itemCode].qty - qty
     }
-    if (newCart[qty]["qty" <= 0]) {
+    if (newCart[itemCode]["qty"] <= 0) {
       delete newCart[itemCode]
     }
     setCart(newCart)
@@ -60,7 +71,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Navbar cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subTotal={subTotal} />
-      <Component cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subTotal={subTotal} {...pageProps} />
+      <Component buyNow={buyNow} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subTotal={subTotal} {...pageProps} />
       <Footer />
     </>
   )
