@@ -1,6 +1,12 @@
-import React from 'react'
+import React from 'react';
+import { useRouter } from 'next/router';
+import Order from '../models/Order';
+import mongoose from 'mongoose';
 
-const Order = () => {
+const MyOrder = ({ order }) => {
+    const router = useRouter()
+    const { id } = router.query
+
     return (
         <section className="text-gray-600 body-font overflow-hidden">
             <div className="container px-5 py-24 mx-auto">
@@ -8,7 +14,7 @@ const Order = () => {
                     <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
                         <h2 className="text-sm title-font text-gray-500 tracking-widest">CODESWEAR.COM</h2>
                         <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">Order Id: #89777</h1>
-                        <p className="leading-relaxed mb-4">Your order has been successfully placed</p>
+                        <p className="leading-relaxed mb-4">Your order has been successfully placed. Your payment status is paid</p>
                         <div className="flex mb-4">
                             <a className="flex-grow text-center py-2 text-lg px-1">Item Description</a>
                             <a className="flex-grow text-center border-gray-300 py-2 text-lg px-1">Quantity</a>
@@ -43,4 +49,16 @@ const Order = () => {
     )
 }
 
-export default Order
+export async function getServerSideProps(context) {
+    if (!mongoose.connections[0].readyState) {
+        await mongoose.connect(process.env.MONGO_URI)
+    }
+
+    let order = await Order.findById(context.query.id)
+
+    return {
+        props: { product: JSON.parse(JSON.stringify(order)) }
+    }
+}
+
+export default MyOrder

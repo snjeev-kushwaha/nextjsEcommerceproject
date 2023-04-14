@@ -28,7 +28,7 @@ const Login = () => {
     const configs = {
       "Content-Type": "application/json"
     }
-    const api = await axios.post('http://localhost:3000/api/login', logininfo, configs)
+    const api = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/login`, logininfo, configs)
     console.log(api)
     if (api.data.success === "true") {
       localStorage.setItem('token', api.data.token)
@@ -82,11 +82,11 @@ const Login = () => {
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
-                <label htmlFor="email-address" className="sr-only">
+                <label htmlFor="email" className="sr-only">
                   Email address
                 </label>
                 <input
-                  id="email-address"
+                  id="email"
                   name="email"
                   onChange={handleChange}
                   value={logininfo.email}

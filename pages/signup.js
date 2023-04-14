@@ -29,7 +29,7 @@ const Signup = () => {
     const configs = {
       "Content-Type": "application/json"
     }
-    let api = await axios.post('http://localhost:3000/api/signup', userinfo, configs)
+    let api = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/signup`, userinfo, configs)
     if (api.data.success === "success") {
       toast.success("Your account has been created")
     } else {
@@ -95,7 +95,7 @@ const Signup = () => {
                 />
               </div>
               <div>
-                <label htmlFor="email-address" className="sr-only">
+                <label htmlFor="email" className="sr-only">
                   Email address
                 </label>
                 <input
