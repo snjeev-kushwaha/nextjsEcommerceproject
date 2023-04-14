@@ -9,7 +9,7 @@ import LoadingBar from 'react-top-loading-bar'
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
   const [user, setUser] = useState({ value: null })
-  const [key, setKey] = useState(0)
+  const [key, setKey] = useState()
   const [cart, setCart] = useState({})
   const [subTotal, setSubTotal] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -30,11 +30,12 @@ function MyApp({ Component, pageProps }) {
       console.error(error)
       localStorage.clear()
     }
+
     const token = localStorage.getItem('token')
     if (token) {
       setUser({ value: token })
-      setKey(Math.random())
     }
+    setKey(Math.random())
   }, [router.query])
 
   const saveCart = (myCart) => {
@@ -60,7 +61,8 @@ function MyApp({ Component, pageProps }) {
   }
 
   const buyNow = (itemCode, qty, price, name, size, variant) => {
-    let newCart = { itemCode: { qty: 1, price, name, size, variant } }
+    let newCart = {}
+    newCart[itemCode] = { qty: 1, price, name, size, variant }
     setCart(newCart)
     saveCart(newCart)
 
@@ -71,6 +73,7 @@ function MyApp({ Component, pageProps }) {
     localStorage.removeItem('token')
     setUser({ value: null })
     setKey(Math.random())
+    router.push('/')
   }
 
   const clearCart = () => {
@@ -98,7 +101,7 @@ function MyApp({ Component, pageProps }) {
         progress={progress}
         onLoaderFinished={() => setProgress(0)}
       />
-      <Navbar Logout={logout} user={user} key={key} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subTotal={subTotal} />
+      {key && <Navbar Logout={logout} user={user} key={key} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subTotal={subTotal} />}
       <Component buyNow={buyNow} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subTotal={subTotal} {...pageProps} />
       <Footer />
     </>
