@@ -1,10 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { AiFillLock } from 'react-icons/ai'
+import { AiFillLock } from 'react-icons/ai';
+import axios from 'axios'
 
 const Forgot = () => {
   const router = useRouter();
+  const [email, setEmail] = useState();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEmail({ ...email, [name]: value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const configs = {
+      'Content-Type': 'application/json'
+    }
+    const api = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/forgot`, email, configs)
+    console.log(api)
+  }
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -32,16 +48,18 @@ const Forgot = () => {
               </Link>
             </p>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
-                <label htmlFor="email-address" className="sr-only">
+                <label htmlFor="email" className="sr-only">
                   Email address
                 </label>
                 <input
-                  id="email-address"
+                  id="email"
                   name="email"
+                  value={email}
+                  onChange={handleChange}
                   type="email"
                   autoComplete="email"
                   required

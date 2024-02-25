@@ -4,8 +4,10 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../src/theme/theme";
 import { Grid } from "@mui/material";
 import ProductPerfomance from "../../src/components/dashboard/AllProducts";
+import Product from '../../models/Product';
+import mongoose from 'mongoose'
 
-const AllOrders = () => {
+const AllOrders = ({ products }) => {
   return (
     <ThemeProvider theme={theme}>
       <style jsx global>{`
@@ -15,7 +17,7 @@ const AllOrders = () => {
       <FullLayout>
         <Grid container spacing={0}>
           <Grid item xs={12} lg={12}>
-            <ProductPerfomance />
+            <ProductPerfomance products={products} />
           </Grid>
         </Grid>
       </FullLayout>
@@ -24,3 +26,14 @@ const AllOrders = () => {
 }
 
 export default AllOrders
+
+
+export async function getServerSideProps(context) {
+  let error = null;
+  if (!mongoose.connections[0].readyState) {
+    await mongoose.connect(process.env.MONGO_URI)
+  }
+
+  let products = await Product.find()
+  return { props: { products: JSON.parse(JSON.stringify(products)) } }
+}
