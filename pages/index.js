@@ -11,7 +11,7 @@ export default function Home() {
       </Head>
 
       <div>
-        <img src='/home.jpg' alt='homeimg' style={{ width: "100vw", height: '80vh' }} />
+        <img src='/home.jpg' alt='homeimg' style={{ width: "100vw", height: '80vh', objectFit: 'cover' }} />
       </div>
 
       <section className="text-gray-600 body-font">

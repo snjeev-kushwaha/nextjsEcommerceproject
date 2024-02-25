@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-// require('dotenv').config()
 
 const connectDb = handler => async (req, res) => {
     if (mongoose.connections[0].readyState) {

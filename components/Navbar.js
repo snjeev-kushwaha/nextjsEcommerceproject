@@ -25,7 +25,7 @@ const Navbar = ({ user, Logout, cart, addToCart, removeFromCart, clearCart, subT
 
   const ref = useRef();
   return (
-    <div>
+    <div className='fixed left-0 right-0 top-0'>
       <div className="flex flex-col md:flex-row md:justify-start justify-center items-center py-2 shadow-md sticky top-0 bg-white z-10">
         <div className="logo mr-auto md:mx-5 mx-5">
           <Link href={'/'}><Image src='/logo.png' alt='logo' width={200} height={40} /></Link>
