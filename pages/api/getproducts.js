@@ -3,25 +3,25 @@ import Product from "../../models/Product"
 import connectDb from "../../middleware/mongoose"
 
 const handler = async (req, res) => {
-    let products = await Product.find()
-    let tshirts = {}
-    for (let item of products) {
-        if (item.title in tshirts) {
-            if (!tshirts[item.title].color.includes(item.color) && item.availableQty > 0) {
-                tshirts[item.title].color.push(item.color)
+    let product = await Product.find()
+    let products = {}
+    for (let item of product) {
+        if (item.title in products) {
+            if (!products[item.title].color.includes(item.color) && item.availableQty > 0) {
+                products[item.title].color.push(item.color)
             }
-            if (!tshirts[item.title].color.includes(item.size) && item.availableQty > 0) {
-                tshirts[item.title].size.push(item.size)
+            if (!products[item.title].color.includes(item.size) && item.availableQty > 0) {
+                products[item.title].size.push(item.size)
             }
         } else {
-            tshirts[item.title] = JSON.parse(JSON.stringify(item))
+            products[item.title] = JSON.parse(JSON.stringify(item))
             if (item.availableQty > 0) {
-                tshirts[item.title].color = [item.color]
-                tshirts[item.title].size = [item.size]
+                products[item.title].color = [item.color]
+                products[item.title].size = [item.size]
             }
         }
     }
-    res.status(200).json({ tshirts })
+    res.status(200).json({ products })
 }
 
 export default connectDb(handler)

@@ -11,7 +11,7 @@ const Hoodies = ({ products }) => {
             {Object.keys(products).length === 0 && <p>sorry all the Hoodies are currently out of stock. New stock coming soon. Stay Tuned!</p>}
             {Object.keys(products).map((item) => {
               return (<div key={products[item]._id} className="lg:w-1/5 md:w-1/2 p-4 w-full shadow-lg m-5">
-                <Link href={`/product/${products[item].slug}`} className="block relative rounded overflow-hidden">
+                <Link href={`/product/${products[item].slug}`} className="block rounded overflow-hidden">
                   <img alt="ecommerce" className="m-auto h-[30vh] md:h-[36vh] block" src={products[item].img} />
                 </Link>
                 <Link href={`/product/${products[item].slug}`}><div className="mt-4 text-center md:text-left">
